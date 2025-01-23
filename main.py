@@ -31,11 +31,11 @@ def scrape_website():
     chrome_options = Options()
     chrome_options.add_argument("--headless")  # Run in headless mode
     chrome_options.add_argument("--no-sandbox")  # Required for cloud environments
-    chrome_options.add_argument("--disable-dev-shm-usage")  # Prevent shared memory issues
-    chrome_options.add_argument("--disable-gpu")  # Disable GPU for headless environments
 
     while True:
         driver = webdriver.Chrome(service=Service("/opt/render/project/.render/chrome/usr/bin/chromedriver"), options=chrome_options)
+        #driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+        
         driver.get("https://fruityblox.com/stock")
         
         time.sleep(10)  # Allow page to load
