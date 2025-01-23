@@ -17,7 +17,7 @@ fi
 echo "...Downloading Chrome version 114"
 mkdir -p $STORAGE_DIR/chrome
 cd $STORAGE_DIR/chrome
-wget https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_114.0.5735.90-1_amd64.deb
+wget https://mirror.cs.uchicago.edu/google-chrome/pool/main/g/google-chrome-stable/google-chrome-stable_114.0.5735.90-1_amd64.deb
 dpkg -x ./google-chrome-stable_114.0.5735.90-1_amd64.deb $STORAGE_DIR/chrome
 rm ./google-chrome-stable_114.0.5735.90-1_amd64.deb
 
