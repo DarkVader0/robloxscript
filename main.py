@@ -35,7 +35,7 @@ def scrape_website():
     chrome_options.add_argument("--disable-gpu")  # Disable GPU for headless environments
 
     while True:
-        driver = webdriver.Chrome(service=Service("/opt/render/project/.render/chrome/opt/google/chrome/chromedriver"), options=chrome_options)
+        driver = webdriver.Chrome(service=Service("/opt/render/project/.render/chrome/usr/bin/chromedriver"), options=chrome_options)
         driver.get("https://fruityblox.com/stock")
         
         time.sleep(2)  # Allow page to load
