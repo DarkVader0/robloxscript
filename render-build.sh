@@ -19,3 +19,14 @@ if [[ ! -d $STORAGE_DIR/chrome ]]; then
 else
   echo "...Using Chrome from cache"
 fi
+
+# Install ChromeDriver
+if [[ ! -f $STORAGE_DIR/chrome/usr/bin/chromedriver ]]; then
+  echo "...Downloading ChromeDriver"
+  wget -P ./ https://chromedriver.storage.googleapis.com/114.0.5735.90/chromedriver_linux64.zip
+  unzip chromedriver_linux64.zip -d $STORAGE_DIR/chrome/usr/bin
+  chmod +x $STORAGE_DIR/chrome/usr/bin/chromedriver
+  rm chromedriver_linux64.zip
+else
+  echo "...Using ChromeDriver from cache"
+fi
