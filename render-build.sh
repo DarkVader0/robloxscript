@@ -2,6 +2,10 @@
 # exit on error
 set -o errexit
 
+# Install Python dependencies
+pip install --upgrade pip
+pip install -r requirements.txt
+
 STORAGE_DIR=/opt/render/project/.render
 
 # Install Chrome if not cached
@@ -26,10 +30,6 @@ if [[ ! -f $STORAGE_DIR/chrome/usr/bin/chromedriver ]]; then
 else
   echo "...Using ChromeDriver from cache"
 fi
-
-# Install Python dependencies
-pip install --upgrade pip
-pip install -r requirements.txt
 
 # Set the Chrome and ChromeDriver binary locations for Selenium
 export PATH="${PATH}:/opt/render/project/.render/chrome/opt/google/chrome"
