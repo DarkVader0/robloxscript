@@ -38,7 +38,7 @@ def scrape_website():
         driver = webdriver.Chrome(service=Service("/opt/render/project/.render/chrome/usr/bin/chromedriver"), options=chrome_options)
         driver.get("https://fruityblox.com/stock")
         
-        time.sleep(2)  # Allow page to load
+        time.sleep(10)  # Allow page to load
 
         try:
             # Scrape Normal Stock
