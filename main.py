@@ -7,8 +7,10 @@ import time
 import re
 from threading import Thread, Lock
 from flask import Flask, jsonify
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 # Shared data structure and lock for thread safety
 scraped_data = {
