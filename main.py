@@ -5,7 +5,7 @@ from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 import time
 import re
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from threading import Thread, Lock
 from flask import Flask, jsonify
 from flask_cors import CORS
@@ -36,9 +36,10 @@ def get_next_update_time(update_time_text):
         hours = int(match.group(1))
         minutes = int(match.group(2))
         seconds = int(match.group(3))
-        next_update_time = datetime.now() + timedelta(hours=hours, minutes=minutes, seconds=seconds)
-        return next_update_time.strftime("%Y-%m-%d %H:%M:%S")  # Format to a readable string
-    return "Unknown"
+        # Add the timedelta and convert to UTC
+        next_update_time = datetime.now(timezone.utc) + timedelta(hours=hours, minutes=minutes, seconds=seconds)
+        return next_update_time.isoformat()  # Returns ISO 8601 format in UTC
+    return None
 
 def scrape_website():
     chrome_options = Options()
@@ -46,12 +47,13 @@ def scrape_website():
     chrome_options.add_argument("--no-sandbox")  # Required for cloud environments
 
     while True:
-        driver = webdriver.Chrome(service=Service("/opt/render/project/.render/chrome/usr/bin/chromedriver"), options=chrome_options)
-        #driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+        #driver = webdriver.Chrome(service=Service("/opt/render/project/.render/chrome/usr/bin/chromedriver"), options=chrome_options)
+        driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
         
         driver.get("https://fruityblox.com/stock")
         
-        time.sleep(15)  # Allow page to load
+        #time.sleep(15)  # Allow page to load
+        time.sleep(5)  # Allow page to load
 
         try:
             # Scrape Normal Stock
@@ -105,6 +107,7 @@ def scrape_website():
 @app.route("/", methods=["GET"])
 def get_scraped_data():
     with data_lock:  # Ensure thread-safe access to `scraped_data`
+        #scrape_website()
         return jsonify(scraped_data)
 
 # Start the scraper in a background thread
