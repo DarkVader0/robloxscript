@@ -5,6 +5,7 @@ from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 import time
 import re
+from datetime import datetime, timedelta
 from threading import Thread, Lock
 from flask import Flask, jsonify
 from flask_cors import CORS
@@ -29,6 +30,16 @@ def get_seconds_from_time(update_time_text):
         return hours * 3600 + minutes * 60 + seconds
     return 0
 
+def get_next_update_time(update_time_text):
+    match = re.search(r"UPDATES IN: (\d+) HOURS, (\d+) MINUTES, (\d+) SECONDS", update_time_text)
+    if match:
+        hours = int(match.group(1))
+        minutes = int(match.group(2))
+        seconds = int(match.group(3))
+        next_update_time = datetime.now() + timedelta(hours=hours, minutes=minutes, seconds=seconds)
+        return next_update_time.strftime("%Y-%m-%d %H:%M:%S")  # Format to a readable string
+    return "Unknown"
+
 def scrape_website():
     chrome_options = Options()
     chrome_options.add_argument("--headless")  # Run in headless mode
@@ -40,7 +51,7 @@ def scrape_website():
         
         driver.get("https://fruityblox.com/stock")
         
-        time.sleep(5)  # Allow page to load
+        time.sleep(15)  # Allow page to load
 
         try:
             # Scrape Normal Stock
@@ -56,7 +67,7 @@ def scrape_website():
                     price_usd = item.find_element(By.XPATH, ".//p[contains(@class, 'text-[#21C55D]')]").text.strip()
                     price_robux = item.find_element(By.XPATH, ".//p[contains(@class, 'text-[#FACC14]')]").text.strip()
                     scraped_data["Normal Stock"].append((name, price_usd, price_robux))
-                scraped_data["Update Times"]["Normal Stock"] = normal_update_time
+                scraped_data["Update Times"]["Normal Stock"] = get_next_update_time(normal_update_time)
 
             # Scrape Mirage Stock
             mirage_stock_section = driver.find_element(By.XPATH, "//div[h2[text()='MIRAGE STOCK']]")
@@ -71,7 +82,7 @@ def scrape_website():
                     price_usd = item.find_element(By.XPATH, ".//p[contains(@class, 'text-[#21C55D]')]").text.strip()
                     price_robux = item.find_element(By.XPATH, ".//p[contains(@class, 'text-[#FACC14]')]").text.strip()
                     scraped_data["Mirage Stock"].append((name, price_usd, price_robux))
-                scraped_data["Update Times"]["Mirage Stock"] = mirage_update_time
+                scraped_data["Update Times"]["Mirage Stock"] = get_next_update_time(mirage_update_time)
 
             # Print scraped data
             print("Scraped data:", scraped_data)
