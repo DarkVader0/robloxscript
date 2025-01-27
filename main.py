@@ -47,13 +47,13 @@ def scrape_website():
     chrome_options.add_argument("--no-sandbox")  # Required for cloud environments
 
     while True:
-        #driver = webdriver.Chrome(service=Service("/opt/render/project/.render/chrome/usr/bin/chromedriver"), options=chrome_options)
-        driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+        driver = webdriver.Chrome(service=Service("/opt/render/project/.render/chrome/usr/bin/chromedriver"), options=chrome_options)
+        #driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
         
         driver.get("https://fruityblox.com/stock")
         
-        #time.sleep(15)  # Allow page to load
-        time.sleep(5)  # Allow page to load
+        time.sleep(15)  # Allow page to load
+        #time.sleep(5)  # Allow page to load
 
         try:
             # Scrape Normal Stock
