@@ -2,24 +2,25 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
-from webdriver_manager.chrome import ChromeDriverManager
 import time
 import re
 from datetime import datetime, timedelta, timezone
 from threading import Thread, Lock
 from flask import Flask, jsonify
 from flask_cors import CORS
+import os
 
 app = Flask(__name__)
 CORS(app)
+CHROMEDRIVER_DIR = os.getenv("CHROMEDRIVER_DIR")
+DRIVER_PATH = os.path.join(CHROMEDRIVER_DIR, "chromedriver")
 
-# Shared data structure and lock for thread safety
 scraped_data = {
     "Normal Stock": [],
     "Mirage Stock": [],
     "Update Times": {}
 }
-data_lock = Lock()  # Lock to ensure thread-safe access to `scraped_data`
+data_lock = Lock()
 
 def get_seconds_from_time(update_time_text):
     match = re.search(r"UPDATES IN: (\d+) HOURS, (\d+) MINUTES, (\d+) SECONDS", update_time_text)
@@ -36,9 +37,8 @@ def get_next_update_time(update_time_text):
         hours = int(match.group(1))
         minutes = int(match.group(2))
         seconds = int(match.group(3))
-        # Add the timedelta and convert to UTC
         next_update_time = datetime.now(timezone.utc) + timedelta(hours=hours, minutes=minutes, seconds=seconds)
-        return next_update_time.isoformat()  # Returns ISO 8601 format in UTC
+        return next_update_time.isoformat()
     return None
 
 def scrape_website():
@@ -52,15 +52,15 @@ def scrape_website():
     chrome_options.add_argument("--enable-unsafe-swiftshader")
     chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
     chrome_options.add_experimental_option("useAutomationExtension", False)
-    chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36")
+    chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36")
 
     while True:
-        driver = webdriver.Chrome(service=Service("/opt/render/project/.render/chrome/usr/bin/chromedriver"), options=chrome_options)
-        #driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+        service = Service(executable_path=DRIVER_PATH)
+        driver = webdriver.Chrome(options=chrome_options, service=service)
         
         driver.get("https://fruityblox.com/stock")
         
-        time.sleep(5)  # Allow page to load
+        time.sleep(10)
 
         try:
             # Scrape Normal Stock
