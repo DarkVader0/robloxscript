@@ -6,20 +6,20 @@ set -o errexit
 pip install --upgrade pip
 pip install -r requirements.txt
 
-apt-get update
-apt-get install -y \
-    libnss3 \
-    libgconf-2-4 \
-    libxss1 \
-    libappindicator1 \
-    libindicator7 \
-    fonts-liberation \
-    xvfb \
-    libxtst6 \
-    libgbm-dev \
-    libasound2 \
-    dbus \
-    dbus-x11
+#apt-get update
+#apt-get install -y \
+#    libnss3 \
+#    libgconf-2-4 \
+#    libxss1 \
+#    libappindicator1 \
+#    libindicator7 \
+#    fonts-liberation \
+#    xvfb \
+#    libxtst6 \
+#    libgbm-dev \
+#    libasound2 \
+#    dbus \
+#    dbus-x11
 
 STORAGE_DIR=/opt/render/project/.render
 
