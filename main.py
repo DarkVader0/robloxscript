@@ -60,8 +60,7 @@ def scrape_website():
         
         driver.get("https://fruityblox.com/stock")
         
-        time.sleep(30)  # Allow page to load
-        #time.sleep(5)  # Allow page to load
+        time.sleep(5)  # Allow page to load
 
         try:
             # Scrape Normal Stock
