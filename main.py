@@ -43,17 +43,21 @@ def get_next_update_time(update_time_text):
 
 def scrape_website():
     chrome_options = Options()
-    chrome_options.add_argument("--headless")  # Run in headless mode
-    chrome_options.add_argument("--no-sandbox")  # Required for cloud environments
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+    chrome_options.add_argument("--disable-gpu")
+    chrome_options.add_argument("--remote-debugging-port=9222")
+    chrome_options.add_argument("--enable-unsafe-swiftshader")
 
     while True:
-        driver = webdriver.Chrome(service=Service("/opt/render/project/.render/chrome/usr/bin/chromedriver"), options=chrome_options)
-        #driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+        #driver = webdriver.Chrome(service=Service("/opt/render/project/.render/chrome/usr/bin/chromedriver"), options=chrome_options)
+        driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
         
         driver.get("https://fruityblox.com/stock")
         
-        time.sleep(15)  # Allow page to load
-        #time.sleep(5)  # Allow page to load
+        #time.sleep(15)  # Allow page to load
+        time.sleep(5)  # Allow page to load
 
         try:
             # Scrape Normal Stock
@@ -92,7 +96,7 @@ def scrape_website():
             # Calculate sleep time
             normal_stock_seconds = get_seconds_from_time(normal_update_time)
             mirage_stock_seconds = get_seconds_from_time(mirage_update_time)
-            sleep_time = min(normal_stock_seconds, mirage_stock_seconds) + 10
+            sleep_time = min(normal_stock_seconds, mirage_stock_seconds)
 
             print(f"Sleeping for {sleep_time} seconds...")
             driver.quit()
